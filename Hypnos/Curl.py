@@ -36,7 +36,7 @@ post_data = {
       "messageType": "NONE_SYS",
       "createTime": 1615283355000,
       "sender": {
-        "nick": "cuichuang2014",
+        "nick": "北音执念5",
         "domain": "cntaobao"
       },
       "receivers": [
@@ -52,50 +52,67 @@ post_data = {
   "chatRequestTimeMillis": 1607412960606
 }
 
-bizUniqueId = str(uuid.uuid4())
+
 
 class Requst_curl:
   '''
   发送cur请求
   '''
-  def request_data(self, str):
-    # 传入参数，拼接起来
 
+
+  def request_data(self,param,bizUniqueId):
+    # 传入参数，拼接起来
+    print(param)
     text = Template('"{\\"text\\":\\"${s2}\\"}"')
-    content = text.safe_substitute(s2=str)
+    content = text.safe_substitute(s2=param)
     #   json.loads()用于将str类型的数据转成list
     content_list = json.loads(content)
-
     # post_data:接口发送的请求
     post_data['event']['body']['bizUniqueId'] = bizUniqueId
-    print(bizUniqueId)
     post_data['event']['body']['content'] = content_list
 
-    # print(post_data)
     # json.dumps() 转化为json格式 将dict类型的数据转成str
     res = requests.post(url, headers=haders, data=json.dumps(post_data))
     response = res.text
+    print(response)
     return response
 
-  # 查询节点库数据
-  def Nodedata(self,biz):
-    print(bizUniqueId + '+++++++++++')
-    nodelog = NodeMysql()
-    res = nodelog.answer_data("SELECT content FROM chat_message WHERE user_id = 1 and `receive_qimen_msg_biz_uniq_id` = '"+biz+"' ORDER BY `dx_created` DESC;")
-    print(res)
-
-  # 查询web库数据
-  def Catalogdata(self):
-    catalog = CatalogMysql()
-    res = catalog.answer_data("SELECT answer_contents FROM `faq_custom_scene` fcs JOIN `faq_answer_config` fac on fcs.`id` = fac.`faq_scene_id`   WHERE fcs.`user_id` =1 and fcs.name = '这个场景不要删除';")
-    data = json.loads(str(res).strip("('',)"))
-    one_data =   str(data[0]['contents']).strip("['']")  # 这个答案也不要修改删除哦亲～～～
-    print(one_data)
+  # # # 查询节点库数据
+  # def Nodedata(self,biz):
+  #   nodelog = NodeMysql()
+  #   # 注意返回的结果中：可能带有欢迎语
+  #   res = nodelog.answer_data("SELECT content FROM chat_message WHERE user_id = 1 and `receive_qimen_msg_biz_uniq_id` = '"+biz+"' and direction=0 ORDER BY `dx_created` DESC;")
+  #   # 注意返回的结果中：可能带有欢迎语,带有欢迎语时会解析失败
+  #   res_data = str(res).strip("(('',),)")
+  #   print(res_data)
+  #   return res_data
+  #
+  # # 查询web库数据
+  # def Catalogdata(self,cj_name):
+  #   catalog = CatalogMysql()
+  #   res = catalog.answer_data("SELECT answer_contents FROM `faq_custom_scene` fcs JOIN `faq_answer_config` fac on fcs.`id` = fac.`faq_scene_id`   WHERE fcs.name = '"+cj_name+"'  and fcs.`user_id` =1 ;")
+  #   data = json.loads(str(res).strip("('',)"))
+  #   one_data =  str(data[0]['contents']).strip("['']")  # 这个答案也不要修改删除哦亲～～～
+  #   print(one_data)
+  #   return one_data
+  #
+  # # 判断返回的数据跟web库配置的数据是否一致
+  # def Eaquls_node_catalog(self):
+  #    node_data = self.Nodedata(bizUniqueId)
+  #    cata_data = self.Catalogdata(cj_name)
+  #    if node_data == cata_data:
+  #      print("接口返回的数据跟配置的数据一致")
+  #    else:
+  #      print("啥也不是")
 
 if __name__ == '__main__':
-  req = Requst_curl()
-  req.request_data('不要删除亲')
-  # 因为是接口返回的数据是异步的，所以需要等待几秒钟，才能调用接口返回的数据
-  time.sleep(3)
-  req.Nodedata(bizUniqueId)
-  req.Catalogdata()
+  pass
+  # req = Requst_curl()
+  # cj_shili = '不要修改亲'
+  # cj_name = '这个场景不要删除'
+  # req.request_data(cj_shili)
+  # # 因为是接口返回的数据是异步的，所以需要等待几秒钟，才能调用接口返回的数据
+  # time.sleep(3)
+  # req.Nodedata(bizUniqueId)
+  # req.Catalogdata(cj_name)
+  # req.Eaquls_node_catalog()
