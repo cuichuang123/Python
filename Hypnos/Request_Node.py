@@ -13,8 +13,8 @@ class NodeMysql:
         # 创建一个连接数据的对象
         self.cont = pymysql.connect(
             host= '192.168.100.12',
-            user= 'darcy',
-            passwd='TsRAScf1aTojt1',
+            user= '**',
+            passwd='***',
             port= 3306,
             charset='utf8',
             db= 'hypnos_node'
